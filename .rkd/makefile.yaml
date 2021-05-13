@@ -1,0 +1,19 @@
+version: org.riotkit.rkd/yaml/v1
+imports: ['rkd_python']
+tasks:
+    :build:
+        steps:
+            - "%RKD% :py:build"
+            - ./setup.py sdist
+
+    :test:
+        steps:
+            - mkdir build
+            - PYTHONPATH=$(pwd) py.test --junitxml=build/junit.xml
+
+    :publish:
+        description: "Publish to PyPI"
+        arguments:
+            "--password":
+                help: "PyPI password"
+        steps: "%RKD% :py:publish --username=__token__ --password=${ARG_PASSWORD}"
