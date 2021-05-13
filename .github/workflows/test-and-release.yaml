@@ -1,0 +1,51 @@
+name: Test and release a package
+on: [push]
+
+jobs:
+    test:
+        runs-on: ubuntu-20.04
+        strategy:
+            matrix:
+                python-version: ["3.8", "3.9", "3.7"]
+        steps:
+            - name: Set GIT identity
+              run: |
+                  git config --global user.email "riotkit@example.org"
+                  git config --global user.name "Buenaventura Durruti"
+
+            - name: Setup Python ${{ matrix.python-version }}
+              uses: actions/setup-python@v2
+              with:
+                  python-version: ${{ matrix.python-version }}
+
+            - name: Install dependencies
+              run: "pip install -r ./requirements.txt && pip install -r ./requirements-dev.txt"
+
+            - name: "Test"
+              run: "rkd :test"
+
+            - name: Archive test results as annotations
+              uses: EnricoMi/publish-unit-test-result-action@v1
+              if: always()
+              with:
+                  files: build/junit.xml
+
+    release:
+        needs: [test]
+        runs-on: ubuntu-20.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
+
+            - name: Setup Python
+              uses: actions/setup-python@v2
+              with:
+                  python-version: 3.7
+
+            - name: Install dependencies
+              run: "pip install -r ./requirements.txt && pip install -r ./requirements-dev.txt"
+
+            - name: Release RKD to PyPI
+              run: "rkd :publish --password=${{ secrets.PYPI_TOKEN }}"
