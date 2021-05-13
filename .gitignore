@@ -6,3 +6,4 @@
 /.venv
 .venv-setup.log
 build/
+/.gitconfig
