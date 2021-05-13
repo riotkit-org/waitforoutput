@@ -7,6 +7,8 @@ Waits for a pattern to match output of a command or docker container logs.
 - Waiting for a pattern to appear in docker container logs
 - Waiting for a generic command output to appear
 - Finding container name by regexp pattern
+- Returns result as a exit code and message
+- Output of checked command/container log is passed through to the console
 
 Installing
 ----------
