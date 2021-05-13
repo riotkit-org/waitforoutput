@@ -35,7 +35,7 @@ Usage with any shell command
 ----------------------------
 
 ```bash
-$ python -m waitforoutput 'Linux' --command 'uname -a'
+$ waitforoutput 'Linux' --command 'uname -a'
 Linux riotkit-dev 5.10.23-1-MANJARO #1 SMP PREEMPT Thu Mar 11 18:47:18 UTC 2021 x86_64 GNU/Linux
 Match found
 ```
