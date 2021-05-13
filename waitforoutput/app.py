@@ -1,10 +1,10 @@
 
 import re
-import sys
 import argparse
 import multiprocessing
 from subprocess import check_output
 from rkd.process import check_call
+from rkd.api.inputoutput import IO
 
 
 class OccurrenceFoundSignal(Exception):
@@ -29,22 +29,24 @@ class WaitForOutputApp(object):
     command: str
     pattern: str
     timeout: int
+    io: IO
 
-    def __init__(self, container: str, command: str, pattern: str, timeout: int):
+    def __init__(self, container: str, command: str, pattern: str, timeout: int, io: IO):
         self.container = container
         self.command = command
         self.pattern = pattern
         self.timeout = timeout
+        self.io = io
 
     def main(self):
         if self.container:
             try:
                 self.container = self.find_container_name(self.container)
             except ContainerNotFound:
-                print('No any container matches pattern "{}"'.format(self.container))
-                sys.exit(1)
+                raise ResultSignal(1, 'No any container matches pattern "{}"'.format(self.container))
 
             self.command = 'docker logs -f {}'.format(self.container)
+            self.io.debug('command = "{}"'.format(self.command))
 
         manager = multiprocessing.Manager()
         results_dict = manager.dict()
@@ -64,13 +66,13 @@ class WaitForOutputApp(object):
         else:
             raise ResultSignal(1, 'Match not found, process exited earlier')
 
-    @staticmethod
-    def wait_for_command_output(pattern: str, command: str, results: dict):
+    def wait_for_command_output(self, pattern: str, command: str, results: dict):
         def is_command_output_matching(text: str):
             if re.findall(pattern, text):
                 raise OccurrenceFoundSignal()
 
         try:
+            self.io.debug('Spawning command {}'.format(command))
             check_call(command, output_capture_callback=is_command_output_matching)
 
         except OccurrenceFoundSignal:
@@ -85,6 +87,7 @@ class WaitForOutputApp(object):
         parser.add_argument('--container', '-c', default='', help='Container name/regexp')
         parser.add_argument('--command', '-cmd', default='', help='Command to watch')
         parser.add_argument('--timeout', '-t', default='30', help='Timeout')
+        parser.add_argument('--log-level', '-l', default='info', help='critical|error|warning|info|debug')
         parser.add_argument('pattern', help='Pattern to search for in command output')
 
         parsed = parser.parse_args()

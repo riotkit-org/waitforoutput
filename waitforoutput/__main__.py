@@ -1,15 +1,19 @@
 import sys
+from rkd.api.inputoutput import IO
 from .app import WaitForOutputApp, ResultSignal
 
 
 if __name__ == '__main__':
-    args = WaitForOutputApp.parse_args()
+    io = IO()
 
     try:
+        args = WaitForOutputApp.parse_args()
+        io.set_log_level(args['log_level'])
+
         WaitForOutputApp(container=args['container'], command=args['command'],
-                         pattern=args['pattern'], timeout=int(args['timeout']))\
+                         pattern=args['pattern'], timeout=int(args['timeout']),
+                         io=io)\
             .main()
     except ResultSignal as signal:
-        print(signal.message)
+        io.info(signal.message) if signal.exit_code == 0 else io.error(signal.message)
         sys.exit(signal.exit_code)
-
