@@ -13,6 +13,9 @@ jobs:
                   git config --global user.email "riotkit@example.org"
                   git config --global user.name "Buenaventura Durruti"
 
+            - name: Checkout
+              uses: actions/checkout@v2
+
             - name: Setup Python ${{ matrix.python-version }}
               uses: actions/setup-python@v2
               with:
