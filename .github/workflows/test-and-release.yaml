@@ -28,10 +28,12 @@ jobs:
               run: "rkd :test"
 
             - name: Archive test results as annotations
-              uses: EnricoMi/publish-unit-test-result-action@v1
+              uses: dorny/test-reporter@v1
               if: always()
               with:
-                  files: build/junit.xml
+                  name: Unit tests results
+                  path: build/junit.xml
+                  reporter: java-junit
 
     release:
         needs: [test]
