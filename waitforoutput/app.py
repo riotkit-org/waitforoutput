@@ -64,6 +64,7 @@ class WaitForOutputApp(object):
         proc.join(timeout=self.timeout)
 
         if proc.is_alive():
+            proc.kill()
             raise ResultSignal(1, 'Match not found in expected time of {}s'.format(self.timeout))
 
         if results_dict.get('found', None) is True:
