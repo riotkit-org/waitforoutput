@@ -8,7 +8,7 @@ tasks:
 
     :test:
         steps:
-            - mkdir build
+            - mkdir -p build
             - PYTHONPATH=$(pwd) py.test --junitxml=build/junit.xml
 
     :publish:

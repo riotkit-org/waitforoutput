@@ -24,6 +24,11 @@ class ResultSignal(Exception):
         self.message = message
 
 
+class TooManyContainersFoundException(ResultSignal):
+    def __init__(self):
+        super().__init__(1, 'Too many containers found')
+
+
 class WaitForOutputApp(object):
     container: str
     command: str
@@ -99,10 +104,12 @@ class WaitForOutputApp(object):
 
     @staticmethod
     def find_container_name(pattern: str) -> str:
-        running_containers = check_output(["docker", "ps", "--format", "{{.Names}}"]).decode('utf-8').split("\n")
+        running_containers = list(filter(lambda x: x, check_output(["docker", "ps", "--format", "{{.Names}}"])
+                                         .decode('utf-8').split("\n")))
 
-        for container in running_containers:
-            if re.match(pattern, container):
-                return container
+        if len(running_containers) > 1:
+            raise TooManyContainersFoundException()
+        elif len(running_containers) == 0:
+            raise ContainerNotFound()
 
-        raise ContainerNotFound()
+        return running_containers[0]

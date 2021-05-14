@@ -44,3 +44,24 @@ class TestWaitForDockerContainer(unittest.TestCase):
 
         finally:
             container.stop()
+
+    def test_too_many_containers_found(self):
+        first = DockerContainer(image='nginx:1.19-alpine').with_name('nginx_0')
+        second = DockerContainer(image='nginx:1.19-alpine').with_name('nginx_1')
+
+        first.start()
+        second.start()
+
+        io = IO()
+
+        try:
+            signal = execute_app(
+                WaitForOutputApp(container='nginx_*', command='',
+                                 pattern='Configuration complete; ready for start up', timeout=15, io=io)
+            )
+
+            self.assertEqual('Too many containers found', signal.message)
+            self.assertEqual(1, signal.exit_code)
+        finally:
+            first.stop()
+            second.stop()
