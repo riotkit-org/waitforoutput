@@ -11,7 +11,7 @@ class TestWaitForCommand(unittest.TestCase):
     def test_waits_for_output_that_shows_immediately(self):
         io = IO()
         signal = execute_app(
-            WaitForOutputApp(container='', command='/bin/bash -c "echo hello"', pattern='hello', timeout=1, io=io)
+            WaitForOutputApp(container='', command='/bin/bash -c "echo hello"', pattern='hello', timeout=10, io=io)
         )
 
         self.assertEqual(0, signal.exit_code)
@@ -21,7 +21,7 @@ class TestWaitForCommand(unittest.TestCase):
         io = IO()
         signal = execute_app(
             WaitForOutputApp(container='', command='/bin/bash -c "sleep 1; echo Yay"',
-                             pattern='Yay', timeout=2, io=io)
+                             pattern='Yay', timeout=10, io=io)
         )
 
         self.assertIn('Match found', signal.message)
@@ -30,7 +30,7 @@ class TestWaitForCommand(unittest.TestCase):
     def test_raises_timeout(self):
         io = IO()
         signal = execute_app(
-            WaitForOutputApp(container='', command='/bin/bash -c "sleep 2"',
+            WaitForOutputApp(container='', command='/bin/bash -c "sleep 3"',
                              pattern='Yay', timeout=1, io=io)
         )
 
