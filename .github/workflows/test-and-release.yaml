@@ -53,4 +53,4 @@ jobs:
               run: "pip install -r ./requirements.txt && pip install -r ./requirements-dev.txt"
 
             - name: Release RKD to PyPI
-              run: "rkd :publish --password=${{ secrets.PYPI_TOKEN }}"
+              run: "rkd :build :publish --password=${{ secrets.PYPI_TOKEN }}"
