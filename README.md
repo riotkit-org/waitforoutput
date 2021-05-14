@@ -20,6 +20,9 @@ pip install waitforoutput
 Usage with docker
 -----------------
 
+`--container` takes a regexp expression, or a full container name. Output from container is streamed to the console until timeout is reached, at the end
+only result is displayed - the container is not killed.
+
 ```bash
 $ waitforoutput 'Configuration complete; ready for start up' --container 'nginx_*' --timeout 5
 /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
@@ -35,6 +38,9 @@ Match found
 
 Usage with any shell command
 ----------------------------
+
+Command specified with `--command` parameter will be launched, and the `waitforoutput` will be streaming output until the `--timeout` is reached.
+After timeout the process will be killed.
 
 ```bash
 $ waitforoutput 'Linux' --command 'uname -a'
