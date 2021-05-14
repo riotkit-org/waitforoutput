@@ -35,7 +35,7 @@ $ waitforoutput 'Configuration complete; ready for start up' --container 'nginx_
 /docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh
 /docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh
 /docker-entrypoint.sh: Configuration complete; ready for start up
-Match found
+[2021-05-14 05:01:46.188][info]: Match found
 ```
 
 Usage with any shell command
@@ -47,7 +47,7 @@ After timeout the process will be killed.
 ```bash
 $ waitforoutput 'Linux' --command 'uname -a'
 Linux riotkit-dev 5.10.23-1-MANJARO #1 SMP PREEMPT Thu Mar 11 18:47:18 UTC 2021 x86_64 GNU/Linux
-Match found
+[2021-05-14 05:01:46.188][info]: Match found
 ```
 
 Authors
