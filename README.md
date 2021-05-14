@@ -23,6 +23,8 @@ Usage with docker
 `--container` takes a regexp expression, or a full container name. Output from container is streamed to the console until timeout is reached, at the end
 only result is displayed - the container is not killed.
 
+If multiple containers are found the application will exit with an error.
+
 ```bash
 $ waitforoutput 'Configuration complete; ready for start up' --container 'nginx_*' --timeout 5
 /docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration
